@@ -1,4 +1,3 @@
-import 'package:dominoes/src/game/database/round.dart';
 import 'package:isar/isar.dart';
 
 part 'game.g.dart';
@@ -8,11 +7,16 @@ class Game {
   Id id = Isar.autoIncrement;
 
   String? teamAname;
-  int? totalScoreA;
-
   String? teamBname;
-  int? totalScoreB;
+  int? limit;
 
-  @ignore
-  List<Round?> rounds = [];
+  List<Round> rounds = [];
+}
+
+@embedded
+class Round {
+  String? teamAname;
+  String? teamBname;
+  int? teamAscore;
+  int? teamBscore;
 }

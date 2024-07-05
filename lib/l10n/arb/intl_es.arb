@@ -1,0 +1,13 @@
+{
+    "@@locale": "es",
+    "helloWorld": "¡Hola Mundo!",
+    "them": "Ellos",
+    "us": "Nosotros",
+    "new_game": "Nuevo Juego",
+    "add_round": "Añadir Ronda",
+    "confirm_new_game": "¿Quieres comenzar un nuevo juego?",
+    "yes": "Sí",
+    "no": "No",
+    "no_game_found": "No se encontró ningún juego",
+    "game_over": "Fin del Juego"
+}

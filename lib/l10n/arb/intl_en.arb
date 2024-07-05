@@ -1,0 +1,13 @@
+{
+    "@@locale": "en",
+    "helloWorld": "Hello World!",
+    "them": "Them",
+    "us": "Us",
+    "new_game": "New Game",
+    "add_round": "Add Round",
+    "confirm_new_game": "Are you sure you want to start a new game?",
+    "yes": "Yes",
+    "no": "No",
+    "no_game_found": "No game found",
+    "game_over": "Game Over"
+}
