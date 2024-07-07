@@ -1,5 +1,6 @@
 {
     "@@locale": "es",
+    "@@author": "SnaidenP",
     "helloWorld": "¡Hola Mundo!",
     "them": "Ellos",
     "us": "Nosotros",
@@ -10,5 +11,8 @@
     "no": "No",
     "no_game_found": "No se encontró ningún juego",
     "game_over": "Fin del Juego",
-    "scorePoints": "{score} puntos"
+    "scorePoints": "{score} puntos",
+    "game": "Juego",
+    "settings": "Ajustes",
+    "partys_saved": "Partidas Guardadas"
 }

@@ -1,5 +1,6 @@
 {
     "@@locale": "en",
+    "@@author": "SnaidenP",
     "helloWorld": "Hello World!",
     "them": "Them",
     "us": "Us",
@@ -10,5 +11,8 @@
     "no": "No",
     "no_game_found": "No game found",
     "game_over": "Game Over",
-    "scorePoints": "{score} points"
+    "scorePoints": "{score} points",
+    "game": "Game",
+    "settings": "Settings",
+    "partys_saved": "Saved Partys"
 }

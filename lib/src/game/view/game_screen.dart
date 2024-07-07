@@ -7,6 +7,7 @@ import 'package:dominoes/src/game/widgets/point_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 
 class GameScreen extends StatefulWidget {
@@ -213,134 +214,234 @@ class GamePage extends StatelessWidget {
           child: BlocBuilder<GameCubit, GameState>(
             builder: (context, state) {
               if (state is GameLoaded) {
-                return ListView(
-                  children: <Widget>[
-                    const SizedBox(height: 50),
-                    Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Row(
-                        children: <Widget>[
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(state.game.teamAname ?? 'Error'),
-                              const SizedBox(height: 10),
-                              PointsTextField(
-                                controller: controllerA,
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(state.game.teamBname ?? 'Error'),
-                              const SizedBox(height: 10),
-                              PointsTextField(
-                                controller: controllerB,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: SizedBox(
-                        width: double.maxFinite,
-                        height: 50,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
+                return SingleChildScrollView(
+                  physics: const ScrollPhysics(),
+                  child: Column(
+                    children: <Widget>[
+                      const SizedBox(height: 50),
+                      Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Row(
+                          children: <Widget>[
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(state.game.teamAname ?? 'Error'),
+                                const SizedBox(height: 10),
+                                PointsTextField(
+                                  controller: controllerA,
+                                ),
+                              ],
                             ),
-                          ),
-                          onPressed: () {
-                            if (controllerA.text.isEmpty &&
-                                controllerB.text.isEmpty) {
-                              return;
-                            }
-                            context.read<GameCubit>().addRound(
-                                  int.tryParse(controllerA.text) ?? 0,
-                                  int.tryParse(controllerB.text) ?? 0,
-                                );
+                            const Spacer(),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                Text(state.game.teamBname ?? 'Error'),
+                                const SizedBox(height: 10),
+                                PointsTextField(
+                                  controller: controllerB,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: SizedBox(
+                          width: double.maxFinite,
+                          height: 50,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            onPressed: () {
+                              if (controllerA.text.isEmpty &&
+                                  controllerB.text.isEmpty) {
+                                return;
+                              }
+                              context.read<GameCubit>().addRound(
+                                    int.tryParse(controllerA.text) ?? 0,
+                                    int.tryParse(controllerB.text) ?? 0,
+                                  );
 
-                            controllerA.clear();
-                            controllerB.clear();
-                          },
-                          child: Text(
-                            context.l10n.add_round,
-                            style: const TextStyle(color: Colors.white),
+                              controllerA.clear();
+                              controllerB.clear();
+                            },
+                            child: Text(
+                              context.l10n.add_round,
+                              style: const TextStyle(color: Colors.white),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    BlocBuilder<GameCubit, GameState>(
-                      builder: (context, state) {
-                        if (state is GameLoaded) {
-                          return Column(
-                            children: [
-                              Container(
-                                // Total points
-                                padding: const EdgeInsets.all(8),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFF0DCDAA),
-                                  borderRadius: BorderRadius.circular(10),
+                      BlocBuilder<GameCubit, GameState>(
+                        builder: (context, state) {
+                          if (state is GameLoaded) {
+                            return Column(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF0DCDAA),
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceAround,
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Text(
+                                            state.game.teamAname ?? 'Error',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                          Text(
+                                            '${state.game.rounds.fold(0, (previousValue, element) => previousValue + element.teamAscore!)}',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 30,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        children: [
+                                          Text(
+                                            state.game.teamBname ?? 'Error',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                            ),
+                                          ),
+                                          Text(
+                                            '${state.game.rounds.fold(0, (previousValue, element) => previousValue + element.teamBscore!)}',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 30,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceAround,
-                                  children: [
-                                    Column(
-                                      children: [
-                                        // Name of team A
-                                        Text(
-                                          state.game.teamAname ?? 'Error',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20,
+                                const SizedBox(height: 20),
+                                ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: state.game.rounds.length,
+                                  itemBuilder: (context, index) {
+                                    final round = state.game.rounds[index];
+                                    final higherScore =
+                                        round.teamAscore! > round.teamBscore!
+                                            ? round.teamAscore
+                                            : round.teamBscore;
+
+                                    return Card(
+                                      elevation: 3,
+                                      margin: const EdgeInsets.symmetric(
+                                        vertical: 8,
+                                        horizontal: 16,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      child: InkWell(
+                                        borderRadius: BorderRadius.circular(15),
+                                        onTap: () {},
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(16),
+                                          child: Row(
+                                            children: [
+                                              Container(
+                                                width: 40,
+                                                height: 40,
+                                                decoration: const BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  gradient: LinearGradient(
+                                                    colors: [
+                                                      Colors.blue,
+                                                      Colors.indigo,
+                                                    ],
+                                                    begin: Alignment.topLeft,
+                                                    end: Alignment.bottomRight,
+                                                  ),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
+                                                    'R${index + 1}',
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 16),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    _buildTeamInfo(
+                                                      name: round.teamAname ??
+                                                          'Error',
+                                                      score:
+                                                          round.teamAscore ?? 0,
+                                                      context: context,
+                                                      isHigherScore:
+                                                          round.teamAscore ==
+                                                              higherScore,
+                                                    ),
+                                                    _buildTeamInfo(
+                                                      name: round.teamBname ??
+                                                          'Error',
+                                                      score:
+                                                          round.teamBscore ?? 0,
+                                                      context: context,
+                                                      isHigherScore:
+                                                          round.teamBscore ==
+                                                              higherScore,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              IconButton(
+                                                icon: const Icon(
+                                                  Icons.delete_outline_rounded,
+                                                  color: Colors.red,
+                                                ),
+                                                onPressed: () {
+                                                  context
+                                                      .read<GameCubit>()
+                                                      .deleteRound(index);
+                                                },
+                                                splashRadius: 24,
+                                              ),
+                                            ],
                                           ),
                                         ),
-                                        Text(
-                                          '${state.game.rounds.fold(0, (previousValue, element) => previousValue + element.teamAscore!)}',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 30,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        // Name of team B
-                                        Text(
-                                          state.game.teamBname ?? 'Error',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20,
-                                          ),
-                                        ),
-                                        Text(
-                                          '${state.game.rounds.fold(0, (previousValue, element) => previousValue + element.teamBscore!)}',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 30,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                      ),
+                                    );
+                                  },
                                 ),
-                              ),
-                              const SizedBox(height: 20),
-                            ],
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      },
-                    ),
-                  ],
+                              ],
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
+                    ],
+                  ),
                 );
               } else if (state is GameError) {
                 return Center(
@@ -354,6 +455,27 @@ class GamePage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTeamInfo({
+    required String name,
+    required int score,
+    required BuildContext context,
+    required bool isHigherScore,
+  }) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+        Text(
+          context.l10n.scorePoints(score),
+          style: TextStyle(
+            color: isHigherScore ? Colors.green : Colors.grey,
+            fontWeight: isHigherScore ? FontWeight.bold : FontWeight.normal,
+          ),
+        ),
+      ],
     );
   }
 }
