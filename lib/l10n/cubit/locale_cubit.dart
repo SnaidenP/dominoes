@@ -17,10 +17,12 @@ class LocaleCubit extends Cubit<Locale> {
 
     if (localeCode == null) {
       final deviceLocale = Platform.localeName.split('_').first;
+      final supportedLocale = _getSupportedLocale(deviceLocale);
 
-      developer.log('Device locale: $deviceLocale');
+      developer.log('Supported locale: $supportedLocale');
+      await prefs.setString('locale', supportedLocale.languageCode);
 
-      emit(_getSupportedLocale(deviceLocale));
+      emit(supportedLocale);
     } else {
       emit(_getSupportedLocale(localeCode));
     }

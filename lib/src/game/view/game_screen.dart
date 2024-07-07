@@ -1,5 +1,4 @@
 import 'dart:ffi';
-
 import 'package:dominoes/l10n/l10n.dart';
 import 'package:dominoes/src/game/cubit/game_cubit.dart';
 import 'package:dominoes/src/game/database/game.dart';
@@ -9,7 +8,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:isar/isar.dart';
-import 'package:provider/provider.dart';
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -19,32 +17,51 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
+  late Future<void> _initializationFuture;
+
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await updateTeamNames();
-    });
+    _initializationFuture = _initializeGameData();
   }
 
-  Future<void> updateTeamNames() async {
-    final isar = Provider.of<Isar>(context, listen: false);
-    final initialData = Game()
-      ..teamAname = AppLocalizations.of(context).them
-      ..teamBname = AppLocalizations.of(context).us
-      ..limit = 200;
+  Future<void> _initializeGameData() async {
+    final isar = context.read<Isar>();
+    final existingGame = await isar.games.where().findFirst();
+    if (mounted) {
+      if (existingGame == null) {
+        final l10n = context.l10n;
+        final initialData = Game()
+          ..teamAname = l10n.them
+          ..teamBname = l10n.us
+          ..limit = 200;
 
-    await isar.writeTxn(() async {
-      await isar.games.put(initialData);
-    });
+        await isar.writeTxn(() async {
+          await isar.games.put(initialData);
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final isar = context.read<Isar>();
-    return BlocProvider(
-      create: (context) => GameCubit(isar)..loadGame(),
-      child: const GamePage(),
+    return FutureBuilder(
+      future: _initializationFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.done) {
+          final isar = context.read<Isar>();
+          return BlocProvider(
+            create: (context) => GameCubit(isar)..loadGame(),
+            child: const GamePage(),
+          );
+        } else {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+      },
     );
   }
 }
@@ -90,12 +107,13 @@ class GamePage extends StatelessWidget {
                               onPressed: () {
                                 controllerA.clear();
                                 controllerB.clear();
+                                gameCubit.newGame();
                                 Navigator.of(context).pop();
                               },
                               child: Text(context.l10n.yes),
                             ),
                             TextButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 controllerA.clear();
                                 controllerB.clear();
                                 Navigator.of(context).pop();
@@ -139,7 +157,6 @@ class GamePage extends StatelessWidget {
                 ),
               );
             } else if (state is GameLoaded) {
-              // if total points the team A or team B are equal to limit show dialog
               if (state.game.limit != null) {
                 final totalPointsA = state.game.rounds.fold(
                   0,
@@ -162,7 +179,13 @@ class GamePage extends StatelessWidget {
                           width: 100,
                           height: 100,
                         ),
-                        content: Text(context.l10n.game_over),
+                        content: Column(
+                          children: [
+                            Text(context.l10n.game_over),
+                            const SizedBox(height: 15),
+                            Text(context.l10n.confirm_new_game),
+                          ],
+                        ),
                         actions: <Widget>[
                           TextButton(
                             onPressed: () {
@@ -311,32 +334,6 @@ class GamePage extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(height: 20),
-
-                              // List of rounds with scores, ListTiles
-                              ListView.builder(
-                                shrinkWrap: true,
-                                itemCount: state.game.rounds.length,
-                                itemBuilder: (context, index) {
-                                  final round = state.game.rounds[index];
-                                  return ListTile(
-                                    title: Text(
-                                      'P${index + 1}: '
-                                      '${round.teamAname} ${round.teamAscore} - '
-                                      '${round.teamBscore} ${round.teamBname}',
-                                    ),
-                                    trailing: IconButton(
-                                      icon: const Icon(
-                                        Icons.delete_outline_rounded,
-                                      ),
-                                      onPressed: () {
-                                        context
-                                            .read<GameCubit>()
-                                            .deleteRound(index);
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
                             ],
                           );
                         }

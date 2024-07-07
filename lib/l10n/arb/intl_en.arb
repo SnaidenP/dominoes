@@ -9,5 +9,6 @@
     "yes": "Yes",
     "no": "No",
     "no_game_found": "No game found",
-    "game_over": "Game Over"
+    "game_over": "Game Over",
+    "scorePoints": "{score} points"
 }

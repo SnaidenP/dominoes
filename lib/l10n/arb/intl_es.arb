@@ -9,5 +9,6 @@
     "yes": "Sí",
     "no": "No",
     "no_game_found": "No se encontró ningún juego",
-    "game_over": "Fin del Juego"
+    "game_over": "Fin del Juego",
+    "scorePoints": "{score} puntos"
 }

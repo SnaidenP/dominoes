@@ -1,6 +1,5 @@
 import 'package:dominoes/l10n/cubit/locale_cubit.dart';
 import 'package:dominoes/src/app/config.dart';
-import 'package:dominoes/src/game/database/game.dart';
 import 'package:dominoes/src/game/view/config_screen.dart';
 import 'package:dominoes/src/game/view/game_screen.dart';
 import 'package:dominoes/src/game/view/history_screen.dart';
@@ -9,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:isar/isar.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
