@@ -1,3 +1,4 @@
+import 'package:dominoes/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 class MyDrawer extends StatelessWidget {
@@ -17,7 +18,7 @@ class MyDrawer extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.games),
-            title: const Text('JUEGO'),
+            title: Text(context.l10n.game),
             onTap: () {
               if (ModalRoute.of(context)!.settings.name != '/game') {
                 Navigator.popAndPushNamed(context, '/game');
@@ -26,7 +27,7 @@ class MyDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.settings),
-            title: const Text('CONFIGURACIÓN'),
+            title: Text(context.l10n.settings),
             onTap: () {
               if (ModalRoute.of(context)!.settings.name != '/config') {
                 Navigator.popAndPushNamed(context, '/config');
@@ -35,7 +36,7 @@ class MyDrawer extends StatelessWidget {
           ),
           ListTile(
             leading: const Icon(Icons.graphic_eq),
-            title: const Text('PARTIDAS GUARDADAS'),
+            title: Text(context.l10n.partys_saved),
             onTap: () {
               if (ModalRoute.of(context)!.settings.name != '/history') {
                 Navigator.popAndPushNamed(context, '/history');
@@ -44,7 +45,7 @@ class MyDrawer extends StatelessWidget {
           ),
           const Spacer(),
           const Text(
-            'v1.0.0',
+            'v2.0.0',
           ),
           const Text(
             'by SnaidenP',

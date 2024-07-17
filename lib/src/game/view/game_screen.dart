@@ -1,6 +1,7 @@
 import 'dart:ffi';
 import 'package:dominoes/l10n/l10n.dart';
 import 'package:dominoes/src/game/cubit/game_cubit.dart';
+import 'package:dominoes/src/game/cubit/old_games_cubit.dart';
 import 'package:dominoes/src/game/database/game.dart';
 import 'package:dominoes/src/game/widgets/drawer.dart';
 import 'package:dominoes/src/game/widgets/point_textfield.dart';
@@ -33,6 +34,7 @@ class _GameScreenState extends State<GameScreen> {
       if (existingGame == null) {
         final l10n = context.l10n;
         final initialData = Game()
+          ..date = DateTime.now()
           ..teamAname = l10n.them
           ..teamBname = l10n.us
           ..limit = 200;
@@ -108,6 +110,11 @@ class GamePage extends StatelessWidget {
                               onPressed: () {
                                 controllerA.clear();
                                 controllerB.clear();
+                                if (gameCubit.state is GameLoaded) {
+                                  context.read<OldGamesCubit>().addGame(
+                                        (gameCubit.state as GameLoaded).game,
+                                      );
+                                }
                                 gameCubit.newGame();
                                 Navigator.of(context).pop();
                               },
@@ -190,9 +197,14 @@ class GamePage extends StatelessWidget {
                         actions: <Widget>[
                           TextButton(
                             onPressed: () {
-                              gameCubit.newGame();
                               controllerA.clear();
                               controllerB.clear();
+                              if (gameCubit.state is GameLoaded) {
+                                context.read<OldGamesCubit>().addGame(
+                                      (gameCubit.state as GameLoaded).game,
+                                    );
+                              }
+                              gameCubit.newGame();
                               Navigator.of(context).pop();
                             },
                             child: Text(context.l10n.yes),

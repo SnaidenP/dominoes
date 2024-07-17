@@ -1,5 +1,7 @@
 import 'package:dominoes/l10n/cubit/locale_cubit.dart';
 import 'package:dominoes/src/app/config.dart';
+import 'package:dominoes/src/app/theme/theme_cubit.dart' as customTheme;
+import 'package:dominoes/src/game/cubit/old_games_cubit.dart';
 import 'package:dominoes/src/game/view/config_screen.dart';
 import 'package:dominoes/src/game/view/game_screen.dart';
 import 'package:dominoes/src/game/view/history_screen.dart';
@@ -15,8 +17,18 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   final isar = await initialConfig();
   runApp(
-    BlocProvider(
-      create: (context) => LocaleCubit(),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => LocaleCubit(),
+        ),
+        BlocProvider(
+          create: (context) => customTheme.ThemeCubit(),
+        ),
+        BlocProvider(
+          create: (context) => OldGamesCubit(isar),
+        ),
+      ],
       child: Provider(create: (context) => isar, child: const MyApp()),
     ),
   );
@@ -29,21 +41,28 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<LocaleCubit, Locale>(
       builder: (context, state) {
-        return MaterialApp(
-          title: 'Dominoes Game Score',
-          initialRoute: '/game',
-          locale: state,
-          localizationsDelegates: const [
-            AppLocalizations.delegate,
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: AppLocalizations.supportedLocales,
-          routes: {
-            '/game': (context) => const GameScreen(),
-            '/config': (context) => const ConfigScreen(),
-            '/history': (context) => const HistoryScreen(),
+        return BlocBuilder<customTheme.ThemeCubit, customTheme.ThemeMode>(
+          builder: (context, themeMode) {
+            return MaterialApp(
+              title: 'Dominoes Game Score',
+              initialRoute: '/game',
+              locale: state,
+              themeMode: themeMode == customTheme.ThemeMode.dark
+                  ? ThemeMode.dark
+                  : ThemeMode.light,
+              localizationsDelegates: const [
+                AppLocalizations.delegate,
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: AppLocalizations.supportedLocales,
+              routes: {
+                '/game': (context) => const GameScreen(),
+                '/config': (context) => const ConfigScreen(),
+                '/history': (context) => const HistoryScreen(),
+              },
+            );
           },
         );
       },

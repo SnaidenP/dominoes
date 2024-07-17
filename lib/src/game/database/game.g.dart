@@ -17,24 +17,29 @@ const GameSchema = CollectionSchema(
   name: r'Game',
   id: -6261407721091271860,
   properties: {
-    r'limit': PropertySchema(
+    r'date': PropertySchema(
       id: 0,
+      name: r'date',
+      type: IsarType.dateTime,
+    ),
+    r'limit': PropertySchema(
+      id: 1,
       name: r'limit',
       type: IsarType.long,
     ),
     r'rounds': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'rounds',
       type: IsarType.objectList,
       target: r'Round',
     ),
     r'teamAname': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'teamAname',
       type: IsarType.string,
     ),
     r'teamBname': PropertySchema(
-      id: 3,
+      id: 4,
       name: r'teamBname',
       type: IsarType.string,
     )
@@ -88,15 +93,16 @@ void _gameSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.limit);
+  writer.writeDateTime(offsets[0], object.date);
+  writer.writeLong(offsets[1], object.limit);
   writer.writeObjectList<Round>(
-    offsets[1],
+    offsets[2],
     allOffsets,
     RoundSchema.serialize,
     object.rounds,
   );
-  writer.writeString(offsets[2], object.teamAname);
-  writer.writeString(offsets[3], object.teamBname);
+  writer.writeString(offsets[3], object.teamAname);
+  writer.writeString(offsets[4], object.teamBname);
 }
 
 Game _gameDeserialize(
@@ -106,17 +112,18 @@ Game _gameDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = Game();
+  object.date = reader.readDateTimeOrNull(offsets[0]);
   object.id = id;
-  object.limit = reader.readLongOrNull(offsets[0]);
+  object.limit = reader.readLongOrNull(offsets[1]);
   object.rounds = reader.readObjectList<Round>(
-        offsets[1],
+        offsets[2],
         RoundSchema.deserialize,
         allOffsets,
         Round(),
       ) ??
       [];
-  object.teamAname = reader.readStringOrNull(offsets[2]);
-  object.teamBname = reader.readStringOrNull(offsets[3]);
+  object.teamAname = reader.readStringOrNull(offsets[3]);
+  object.teamBname = reader.readStringOrNull(offsets[4]);
   return object;
 }
 
@@ -128,8 +135,10 @@ P _gameDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongOrNull(offset)) as P;
+      return (reader.readDateTimeOrNull(offset)) as P;
     case 1:
+      return (reader.readLongOrNull(offset)) as P;
+    case 2:
       return (reader.readObjectList<Round>(
             offset,
             RoundSchema.deserialize,
@@ -137,9 +146,9 @@ P _gameDeserializeProp<P>(
             Round(),
           ) ??
           []) as P;
-    case 2:
-      return (reader.readStringOrNull(offset)) as P;
     case 3:
+      return (reader.readStringOrNull(offset)) as P;
+    case 4:
       return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -234,6 +243,74 @@ extension GameQueryWhere on QueryBuilder<Game, Game, QWhereClause> {
 }
 
 extension GameQueryFilter on QueryBuilder<Game, Game, QFilterCondition> {
+  QueryBuilder<Game, Game, QAfterFilterCondition> dateIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'date',
+      ));
+    });
+  }
+
+  QueryBuilder<Game, Game, QAfterFilterCondition> dateIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'date',
+      ));
+    });
+  }
+
+  QueryBuilder<Game, Game, QAfterFilterCondition> dateEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'date',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Game, Game, QAfterFilterCondition> dateGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'date',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Game, Game, QAfterFilterCondition> dateLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'date',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Game, Game, QAfterFilterCondition> dateBetween(
+    DateTime? lower,
+    DateTime? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'date',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
   QueryBuilder<Game, Game, QAfterFilterCondition> idEqualTo(Id value) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
@@ -743,6 +820,18 @@ extension GameQueryObject on QueryBuilder<Game, Game, QFilterCondition> {
 extension GameQueryLinks on QueryBuilder<Game, Game, QFilterCondition> {}
 
 extension GameQuerySortBy on QueryBuilder<Game, Game, QSortBy> {
+  QueryBuilder<Game, Game, QAfterSortBy> sortByDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'date', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Game, Game, QAfterSortBy> sortByDateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'date', Sort.desc);
+    });
+  }
+
   QueryBuilder<Game, Game, QAfterSortBy> sortByLimit() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'limit', Sort.asc);
@@ -781,6 +870,18 @@ extension GameQuerySortBy on QueryBuilder<Game, Game, QSortBy> {
 }
 
 extension GameQuerySortThenBy on QueryBuilder<Game, Game, QSortThenBy> {
+  QueryBuilder<Game, Game, QAfterSortBy> thenByDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'date', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Game, Game, QAfterSortBy> thenByDateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'date', Sort.desc);
+    });
+  }
+
   QueryBuilder<Game, Game, QAfterSortBy> thenById() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'id', Sort.asc);
@@ -831,6 +932,12 @@ extension GameQuerySortThenBy on QueryBuilder<Game, Game, QSortThenBy> {
 }
 
 extension GameQueryWhereDistinct on QueryBuilder<Game, Game, QDistinct> {
+  QueryBuilder<Game, Game, QDistinct> distinctByDate() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'date');
+    });
+  }
+
   QueryBuilder<Game, Game, QDistinct> distinctByLimit() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'limit');
@@ -856,6 +963,12 @@ extension GameQueryProperty on QueryBuilder<Game, Game, QQueryProperty> {
   QueryBuilder<Game, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<Game, DateTime?, QQueryOperations> dateProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'date');
     });
   }
 

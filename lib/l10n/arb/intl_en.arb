@@ -14,5 +14,22 @@
     "scorePoints": "{score} points",
     "game": "Game",
     "settings": "Settings",
-    "partys_saved": "Saved Partys"
+    "partys_saved": "Saved Partys",
+    "edit_teams": "Edit Teams",
+    "change_language": "Change Language",
+    "name_team_1": "Team Name 1",
+    "name_team_2": "Team Name 2",
+    "limit_points": "Points Limit",
+    "change_theme": "Change Theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "save": "Save",
+    "saved_successfully": "Saved successfully",
+    "go": "Go",
+    "old_games": "Past Games",
+    "no_old_games": "No past games available",
+    "round": "Round",
+    "please_enter_a_valid_number": "Please enter a valid number",
+    "please_complete_all_fields": "Please complete all fields"
 }

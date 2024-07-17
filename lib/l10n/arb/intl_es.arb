@@ -14,5 +14,22 @@
     "scorePoints": "{score} puntos",
     "game": "Juego",
     "settings": "Ajustes",
-    "partys_saved": "Partidas Guardadas"
+    "partys_saved": "Partidas Guardadas",
+    "edit_teams": "Editar Equipos",
+    "change_language": "Cambiar Idioma",
+    "name_team_1": "Nombre del Equipo 1",
+    "name_team_2": "Nombre del Equipo 2",
+    "limit_points": "Límite de Puntos",
+    "change_theme": "Cambiar Tema",
+    "light": "Claro",
+    "dark": "Oscuro",
+    "system": "Sistema",
+    "save": "Guardar",
+    "saved_successfully": "Guardado con éxito",
+    "go": "Ir",
+    "old_games": "Juegos Anteriores",
+    "no_old_games": "No hay juegos anteriores disponibles",
+    "round": "Ronda",
+    "please_enter_a_valid_number": "Por favor, introduce un número válido",
+    "please_complete_all_fields": "Por favor, completa todos los campos"
 }
